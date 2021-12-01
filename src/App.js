@@ -20,13 +20,6 @@ function App() {
   const [filter, setFilter] = useState('')
   const pixiStage = useRef(null)
   const pixiContainer = useRef(null)
-
-  // var test = Loader
-  // test.registerPlugin(SpritesheetLoader)
-  // console.log('hi', test)
-  
-  // Loader = Loader.registerPlugin(SpritesheetLoader);
-
   
   const zoomBehavior = d3.zoom().on("zoom", zoom);
 
@@ -58,16 +51,14 @@ function App() {
 
       const canvas = d3.select(pixiStage.current._canvas);
 
-      console.log('test', canvas, resources)
-
       if (canvas) {
         console.log('WE DID IT')
 
         const root = pack(PACKED)
-        console.log(root.descendants().filter(node => node.depth === 2))
         setRoot(root.descendants().filter(node => node.depth === 2))
-
         canvas.call(zoomBehavior)
+
+        console.log('rendering now?')
 
         // console.log(root.descendants().filter(node => node.depth === 2))
       }
@@ -85,8 +76,24 @@ function App() {
     console.log('filter effect', filter)
     if (filter === '') return
 
-    const root = pack(PACKED)
-    setRoot(root.descendants().filter(node => node.depth === 2 && (node.data.cleanImage.includes(filter) || node.data.cleanTitle.includes(filter))))
+    var newPacked = {
+      name: "Smithsonian",
+      children: [
+        {name: "World War One", children: []},
+        {name: "Between Wars", children: []},
+        {name: "World War Two", children: []}
+      ]
+    }
+
+    for (var i = 0; i < PACKED.children.length; i++) {
+      newPacked.children[i].children = PACKED.children[i].children.filter(poster => (poster.cleanImage.includes(filter) || poster.cleanTitle.includes(filter)))
+    }
+
+    console.log(newPacked)
+
+    const root = pack(newPacked)
+    console.log('sending in', root.descendants().filter(node => node.depth === 2))
+    setRoot(root.descendants().filter(node => node.depth === 2))
   }, [filter])
 
 
@@ -114,12 +121,14 @@ function App() {
               } */}
               {
                 root.map(node => {
+                  // console.log(node, resources[node.data.ref])
                   return <Sprite
                     image={resources[node.data.ref].url}
                     x={node.x}
                     y={node.y}
-                    height={8}
-                    width={8}
+                    scale={{ x: 0.1, y: 0.1 }}
+                    // height={8}
+                    // width={8}
                   />
                 })
               }
