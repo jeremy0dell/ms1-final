@@ -1,0 +1,20 @@
+export const KEYWORDS = [
+    [ 'british', 1520 ], [ 'us', 1505 ],
+    [ 'soldier', 1113 ], [ 'war', 1101 ],
+    [ 'soldiers', 958 ],
+    [ 'you', 858 ],      [ 'liberty', 835 ],
+    [ 'your', 708 ],     [ 'flag', 704 ],
+    [ 'red', 546 ],      [ 'holding', 543 ],
+    [ 'german', 523 ],
+    [ 'american', 514 ], [ 'man', 504 ],
+    [ 'woman', 498 ],    [ 'loan', 489 ],
+    [ 'cross', 477 ],    [ 'background', 477 ],
+    [ 'french', 462 ],   [ 'victory', 432 ],
+    [ 'buy', 430 ],
+    [ 'two', 427 ],      [ 'men', 427 ],
+    [ 'are', 413 ],      [ 'bonds', 381 ],
+    [ 'an', 379 ],       [ 'over', 339 ],
+    [ 'his', 315 ],      [ 'up', 315 ],
+    [ 'this', 308 ],     [ 'words', 306 ],
+    [ 'under', 300 ]
+].map(w => w[0])
