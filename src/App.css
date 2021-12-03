@@ -28,6 +28,14 @@
   color: #61dafb;
 }
 
+.filter {
+  font-size: 24px;
+}
+
+.topic {
+  font-size: 16px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

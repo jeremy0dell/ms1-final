@@ -1,5 +1,5 @@
 /* make app fit page height */
-body > #root > div {
+body > #root {
   height: 100vh;
 }
 
