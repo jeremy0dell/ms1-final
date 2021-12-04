@@ -5,11 +5,14 @@ import * as utils from '@pixi/utils';
 import { Viewport as PixiViewport } from "pixi-viewport";
 import * as d3 from 'd3'
 import TWEEN from '@tweenjs/tween.js'
+import Modal from '@mui/material/Modal'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
 // import { Viewport } from 'pixi-viewport'
 import logo from './logo.svg';
 import './App.css';
 
 import Viewport from './Viewport.tsx';
+import ChangeSprite from './ChangeSprite';
 
 import DATA from './data/posters_filtered.json'
 import PACKED from './data/posters_packed.json'
@@ -25,6 +28,10 @@ function App(props) {
   const [filter, setFilter] = useState('')
   const [canvasSelection, setCanvasSelection] = useState('')
   const [animate, setAnimate] = useState({})
+
+  //modal
+  const [open, setOpen] = useState(false)
+
   const pixiStage = useRef(null)
   const pixiContainer = useRef(null)
   const pixiViewport = useRef(null)
@@ -47,27 +54,6 @@ function App(props) {
         // canvas.call(zoomBehavior)
         setCanvasSelection(canvas)
         console.log('rendering now?', Viewport, pixiViewport)
-
-        // setTimeout(() => {
-        //   console.log(pixiStage.current.app)
-        //   const app = pixiStage.current.app
-
-        //   const viewport = new PixiViewport({
-        //     screenWidth: props.width,
-        //     screenHeight: props.height,
-        //     worldWidth: props.width * 2,
-        //     worldHeight: props.height * 2,
-        //     ticker: app.ticker,
-        //     interaction: app.renderer.plugins.interaction
-        //   });
-        //   app.stage.addChild(viewport);
-        //   viewport.drag().pinch().wheel().clampZoom({});
-        //   console.log(viewport.animate)
-        //   viewport.animate({
-        //     time: 5000,
-        //     position: {x: 500, y: 500}
-        //   })
-        // }, 8000)
       }
 
       
@@ -157,6 +143,26 @@ function App(props) {
 
   }
 
+  // create sprites
+
+  const sprites = root.map((node, i) => {
+    const {height, width} = resources[node.data.ref].texture.baseTexture
+    return <ChangeSprite
+      thumbnail={resources[node.data.ref].url}
+      highRes={node.data.link}
+      x={node.x}
+      y={node.y}
+      anchor={0.5}
+      height={height}
+      width={width}
+      tint={node.data.filter === undefined ? '0xFFFFFF' : (!node.data.filter? '0x2a2a2a' : '0xFFFFFF')}
+      interactive={true}
+      setOpen={setOpen}
+      pixiStage={pixiStage}
+      node={node}
+    />
+  })
+
   return (
     <>
       <div className="UI">
@@ -185,36 +191,38 @@ function App(props) {
             <Viewport {...{height, width}} innerRef={pixiViewport}>
               <Container ref={pixiContainer}>
                 {
-                  root.map(node => {
-                    const {height, width} = resources[node.data.ref].texture.baseTexture
-                    return <Sprite
-                      image={resources[node.data.ref].url}
-                      x={node.x}
-                      y={node.y}
-                      anchor={0.5}
-                      height={height}
-                      width={width}
-                      scale={{ x: 0.035 * node.r, y: 0.035 * node.r }}
-                      tint={node.data.filter === undefined ? '0xFFFFFF' : (!node.data.filter? '0x2a2a2a' : '0xFFFFFF')}
-                      interactive={true}
-                      pointerdown={(event) => {
-                        console.log('this', this)
-                        pixiStage?.current?.app?.stage?.children[0]?.animate({
-                          time: 1000,
-                          position: { x: node.x, y: node.y - 4 },
-                          scale: 60,
-                          ease: 'easeInOutSine'
-                        })
-                      }}
-                    />
-                  })
+                  sprites
                 }
               </Container>
             </Viewport>
           </Stage>
       }
+
+      <ClickAwayListener onClickAway={() => setOpen(false)}>
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          hideBackdrop
+          sx={{
+            position: 'absolute',
+            top: '3%',
+            left: 'calc(50% - 230px)',
+            height: 350,
+            width: 350,
+            background: 'rgba(23,24,30,.93)',
+            borderRadius: 10,
+            color: 'white',
+            padding: '40px'
+          }}
+          // onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <div>hello</div>
+        </Modal>
+      </ClickAwayListener>
     </>
   );
 }
 
-export default withPixiApp(App);
+export default App;
