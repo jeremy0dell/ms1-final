@@ -25,6 +25,7 @@ function App(props) {
   const [width, setWidth] = useState(window.innerWidth)
   const [resources, setResources] = useState({})
   const [root, setRoot] = useState([])
+  const [selected, setSelected] = useState({})
   const [filter, setFilter] = useState('')
   const [canvasSelection, setCanvasSelection] = useState('')
   const [animate, setAnimate] = useState({})
@@ -160,6 +161,7 @@ function App(props) {
       setOpen={setOpen}
       pixiStage={pixiStage}
       node={node}
+      setSelected={() => setSelected(node.data)}
     />
   })
 
@@ -212,13 +214,31 @@ function App(props) {
             background: 'rgba(23,24,30,.93)',
             borderRadius: 10,
             color: 'white',
-            padding: '40px'
+            padding: '40px',
+            '&.Mui-selected': {
+              outline: 'none',
+            }
           }}
           // onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <div>hello</div>
+          {
+            Object.keys(selected).length === 0 ?
+            <div>nothings selected</div> :
+            <div
+              className="modalBox"
+              style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+            >
+              <div style={{textAlign: 'center', fontWeight: '700', fontSize: 20}}>{selected.title}</div>
+              <div>Description: {selected.image}</div>
+              <div>Topics: {selected.topic.join(', ')}</div>
+              <div>Series: {selected.series}</div>
+              <div>Country: {selected.country}</div>
+              <div>Link: https://whatever.com</div>
+            </div>
+
+          }
         </Modal>
       </ClickAwayListener>
     </>

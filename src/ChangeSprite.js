@@ -17,6 +17,7 @@ export default ({thumbnail, highRes, ...props}) => {
         alpha={tempTint ? 0 : 1}
         pointerdown={(event) => {
             console.log('hello', props)
+            props.setSelected()
             if (!isHigh) {
                 setTempTint(true)
                 setImage(highRes)
