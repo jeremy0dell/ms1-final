@@ -32,6 +32,16 @@
   font-size: 24px;
 }
 
+.filter.active {
+  color: black;
+  background-color: wheat;
+}
+
+.filter:hover {
+  font-weight: 700;
+  font-style: italic;
+}
+
 .topic {
   font-size: 16px;
 }
