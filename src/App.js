@@ -1,22 +1,22 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Stage, Container, Sprite, Graphics, PixiComponent, auto, withPixiApp } from '@inlet/react-pixi';
+import { Stage, Container, Sprite, Text, PixiComponent, auto, withPixiApp } from '@inlet/react-pixi';
 import { Loader } from '@pixi/loaders'
 import * as utils from '@pixi/utils';
-import { Viewport as PixiViewport } from "pixi-viewport";
+import * as PIXI from "pixi.js";
 import * as d3 from 'd3'
 import TWEEN from '@tweenjs/tween.js'
-import Modal from '@mui/material/Modal'
-import ClickAwayListener from '@mui/material/ClickAwayListener'
-// import { Viewport } from 'pixi-viewport'
-import logo from './logo.svg';
+// import Modal from '@mui/material/Modal'
+// import ClickAwayListener from '@mui/material/ClickAwayListener'
+import "@fontsource/stardos-stencil";
 import './App.css';
 
 import Viewport from './Viewport.tsx';
 import ChangeSprite from './ChangeSprite';
+import InfoModal from './InfoModal'
+import LoadingScreen from './LoadingScreen';
 
 import DATA from './data/posters_filtered.json'
 import PACKED from './data/posters_packed.json'
-// import sheet from './data/sprites/sprite-sheets-0.json'
 
 import { KEYWORDS, TOPICS } from './constants'
 
@@ -51,7 +51,7 @@ function App(props) {
 
       if (canvas) {
         const root = pack(PACKED)
-        setRoot(root.descendants().filter(node => node.depth === 2))
+        setRoot(root.descendants().map(n => ({...n, y: n.y - 100, x: n.x - 55})).filter(node => node.depth === 2))
         // canvas.call(zoomBehavior)
         setCanvasSelection(canvas)
         console.log('rendering now?', Viewport, pixiViewport)
@@ -62,7 +62,7 @@ function App(props) {
 
     return () => {
       utils.clearTextureCache()
-      document.getElementById('pixiStage').innerHTML = ''
+      // document.getElementById('pixiStage').innerHTML = ''
     }
   }, [])
 
@@ -133,7 +133,7 @@ function App(props) {
       })
     }
     const root = pack(newPacked)
-    setRoot(root.descendants().filter(node => node.depth === 2))
+    setRoot(root.descendants().map(n => ({...n, y: n.y - 100, x: n.x - 55})).filter(node => node.depth === 2))
 
     pixiStage?.current?.app?.stage?.children[0]?.animate({
       time: 1200,
@@ -156,34 +156,57 @@ function App(props) {
       anchor={0.5}
       height={height}
       width={width}
-      tint={node.data.filter === undefined ? '0xFFFFFF' : (!node.data.filter? '0x2a2a2a' : '0xFFFFFF')}
+      tint={node.data.filter === undefined ? '0xFFFFFF' : (!node.data.filter ? '0x2a2a2a' : '0xFFFFFF')}
       interactive={true}
       setOpen={setOpen}
       pixiStage={pixiStage}
       node={node}
-      setSelected={() => setSelected(node.data)}
+      setSelected={() => {
+        console.log('im seting as selected:', node.data)
+        setSelected(node.data)
+      }}
     />
   })
 
+  console.log('ASDFASDFS', KEYWORDS, require("@fontsource/stardos-stencil"))
+
   return (
     <>
-      <div className="UI">
+      {/* <div className="UI">
         <div  style={{position: 'fixed'}}>
-          <div style={{position: 'absolute', left: 0, height: height, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-            {/* <div className="filter" onClick={() => setFilter('')}>NONE</div> */}
+          <div className="filterContainer" style={{position: 'absolute', left: 0, height: height, width: 175, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>
+            <div className="filter" onClick={() => setFilter('')}>NONE</div>
             {KEYWORDS.map(word => <div className="filter" onClick={(event) => handleFilter(word, 'keyword', event)}>{word.toUpperCase()}</div>)}
           </div>
         </div>
         <div style={{position: 'fixed', right: 0}}>
-          <div style={{position: 'absolute', right: 0, height: height, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-            {/* <div className="filter" onClick={() => setFilter('')}>NONE</div> */}
-            {TOPICS.map(word => <div className="filter topic" onClick={(event) => handleFilter(word, 'topic', event)}>{word.toUpperCase()}</div>)}
+          <div className="filterContainer" style={{position: 'absolute', right: 0, height: height, width: 295, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>
+            <div className="filter" onClick={() => setFilter('')}>NONE</div>
+            {TOPICS.map(word => <div className="filter topic" onClick={(event) => handleFilter(word[0], 'topic', event)}>{word[1] ? word[1].toUpperCase() :  word[0].toUpperCase()}</div>)}
           </div>
         </div>
-      </div>
+      </div> */}
       {
-        Object.entries(resources).length === 0 && root.length === 0 ?
-          'loading' :
+        // deployment
+        // Object.entries(resources).length === 0 && root.length === 0 ?
+        // DEVELOPMENT
+        true ?
+          <LoadingScreen /> :
+          <>
+            <div className="UI">
+              <div  style={{position: 'fixed'}}>
+                <div className="filterContainer" style={{position: 'absolute', left: 0, height: height, width: 175, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>
+                  <div className="filter" onClick={() => setFilter('')}>NONE</div>
+                  {KEYWORDS.map(word => <div className="filter" onClick={(event) => handleFilter(word, 'keyword', event)}>{word.toUpperCase()}</div>)}
+                </div>
+              </div>
+              <div style={{position: 'fixed', right: 0}}>
+                <div className="filterContainer" style={{position: 'absolute', right: 0, height: height, width: 295, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>
+                  <div className="filter" onClick={() => setFilter('')}>NONE</div>
+                  {TOPICS.map(word => <div className="filter topic" onClick={(event) => handleFilter(word[0], 'topic', event)}>{word[1] ? word[1].toUpperCase() :  word[0].toUpperCase()}</div>)}
+                </div>
+              </div>
+            </div>
           <Stage
             {...{height, width}}
             ref={pixiStage}
@@ -195,52 +218,91 @@ function App(props) {
                 {
                   sprites
                 }
+                  <Text
+                    text="World War One"
+                    anchor={0.5}
+                    x={630- 55}
+                    y={140}
+                    style={
+                      new PIXI.TextStyle({
+                        align: 'center',
+                        fontFamily: ['Stardos Stencil'],
+                        fontSize: 36,
+                        fontWeight: 'normal',
+                        fill: ['white'], // gradient
+                        // stroke: '#01d27e',
+                        strokeThickness: 5,
+                        letterSpacing: 10,
+                        dropShadow: true,
+                        dropShadowColor: 'wheat',
+                        dropShadowBlur: 4,
+                        dropShadowAngle: Math.PI / 6,
+                        dropShadowDistance: 6,
+                        // wordWrap: true,
+                        // wordWrapWidth: 440,
+                      })
+                    }
+                  />
+                  <Text
+                    text="World War Two"
+                    anchor={0.5}
+                    x={1190- 55}
+                    y={170}
+                    style={
+                      new PIXI.TextStyle({
+                        align: 'center',
+                        fontFamily: ['Stardos Stencil'],
+                        fontSize: 36,
+                        fontWeight: 'normal',
+                        fill: ['white'], // gradient
+                        // stroke: '#01d27e',
+                        strokeThickness: 5,
+                        letterSpacing: 10,
+                        dropShadow: true,
+                        dropShadowColor: 'wheat',
+                        dropShadowBlur: 4,
+                        dropShadowAngle: Math.PI / 6,
+                        dropShadowDistance: 6,
+                        // wordWrap: true,
+                        // wordWrapWidth: 440,
+                      })
+                    }
+                  /> 
+                  <Text
+                  text="Between Wars"
+                  anchor={0.5}
+                  x={940- 55}
+                  y={1020}
+                  style={
+                    new PIXI.TextStyle({
+                      align: 'center',
+                      fontFamily: ['Stardos Stencil'],
+                      fontSize: 36,
+                      fontWeight: 'normal',
+                      fill: ['white'], // gradient
+                      // stroke: '#01d27e',
+                      strokeThickness: 5,
+                      letterSpacing: 10,
+                      dropShadow: true,
+                      dropShadowColor: 'wheat',
+                      dropShadowBlur: 4,
+                      dropShadowAngle: Math.PI / 6,
+                      dropShadowDistance: 6,
+                      // wordWrap: true,
+                      // wordWrapWidth: 440,
+                    })
+                  }
+                />
               </Container>
             </Viewport>
           </Stage>
+          </>
       }
-
-      <ClickAwayListener onClickAway={() => setOpen(false)}>
-        <Modal
-          open={open}
-          onClose={() => setOpen(false)}
-          hideBackdrop
-          sx={{
-            position: 'absolute',
-            top: '3%',
-            left: 'calc(50% - 230px)',
-            height: 350,
-            width: 350,
-            background: 'rgba(23,24,30,.93)',
-            borderRadius: 10,
-            color: 'white',
-            padding: '40px',
-            '&.Mui-selected': {
-              outline: 'none',
-            }
-          }}
-          // onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          {
-            Object.keys(selected).length === 0 ?
-            <div>nothings selected</div> :
-            <div
-              className="modalBox"
-              style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-            >
-              <div style={{textAlign: 'center', fontWeight: '700', fontSize: 20}}>{selected.title}</div>
-              <div>Description: {selected.image}</div>
-              <div>Topics: {selected.topic.join(', ')}</div>
-              <div>Series: {selected.series}</div>
-              <div>Country: {selected.country}</div>
-              <div>Link: https://whatever.com</div>
-            </div>
-
-          }
-        </Modal>
-      </ClickAwayListener>
+      <InfoModal
+        open={open}
+        setOpen={setOpen}
+        selected={selected}
+      />
     </>
   );
 }

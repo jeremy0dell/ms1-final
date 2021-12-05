@@ -1,3 +1,16 @@
+
+@font-face {
+  font-family: 'Stardos Stencil'; 
+  src: url('./font/StardosStencil-Regular.ttf');
+  font-weight: normal;
+} 
+
+@font-face {
+  font-family: 'Stardos Stencil'; 
+  src: url('./font/StardosStencil-Bold.ttf');
+  font-weight: bold;
+} 
+
 /* make app fit page height */
 body > #root {
   height: 100vh;
@@ -10,6 +23,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: black;
 }
 
 code {

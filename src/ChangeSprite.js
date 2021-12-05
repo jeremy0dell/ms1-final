@@ -16,6 +16,11 @@ export default ({thumbnail, highRes, ...props}) => {
         // tint={tempTint ? '0x000000' : props.tint}
         alpha={tempTint ? 0 : 1}
         pointerdown={(event) => {
+            if (props.node.data?.filter === false) {
+                // short circuit
+                return
+            }
+
             console.log('hello', props)
             props.setSelected()
             if (!isHigh) {
@@ -26,13 +31,13 @@ export default ({thumbnail, highRes, ...props}) => {
 
             setTimeout(() => {
                 setTempTint(false)
-                props.setOpen(true)
             }, 500)
             props.pixiStage?.current?.app?.stage?.children[0]?.animate({
               time: 1000,
               position: { x: props.node.x, y: props.node.y - 3.7 },
               scale: 70,
               ease: 'easeInOutSine',
+              callbackOnComplete: () => props.setOpen(true)
             })
           }}
         />

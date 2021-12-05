@@ -1,0 +1,45 @@
+div {
+    color: white;
+    font-family: 'Stardos Stencil';
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.subContainer {
+
+}
+
+
+.loading {
+    font-size: 70px;
+    width: 330px;
+}
+  
+.loading:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4,end) 900ms infinite;      
+    animation: ellipsis steps(4,end) 900ms infinite;
+    content: "\2026";
+    width: 0px;
+}
+
+@keyframes ellipsis {
+    to {
+        width: 1.5em;    
+    }
+}
+
+@-webkit-keyframes ellipsis {
+    to {
+        width: 1.5em;    
+    }
+}

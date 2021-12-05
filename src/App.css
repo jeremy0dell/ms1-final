@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'Stardos Stencil'; 
+  src: url('./font/StardosStencil-Regular.ttf');
+  font-weight: normal;
+} 
+
+@font-face {
+  font-family: 'Stardos Stencil'; 
+  src: url('./font/StardosStencil-Bold.ttf');
+  font-weight: bold;
+} 
+
 .App {
   text-align: center;
 }
@@ -30,6 +42,8 @@
 
 .filter {
   font-size: 24px;
+  width: 100%;
+  text-align: center;
 }
 
 .filter.active {
@@ -42,8 +56,15 @@
   font-style: italic;
 }
 
+.filterContainer {
+  background: rgba(0, 0, 0, 0.363);
+  backdrop-filter: blur(10px);
+  /* backdrop-filter: opacity(50%); */
+  /* background-color: black; */
+}
+
 .topic {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 @keyframes App-logo-spin {
