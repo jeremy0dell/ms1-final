@@ -67,11 +67,14 @@
   font-size: 18px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.reset {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.reset:hover {
+  background-color: rgb(49, 49, 49, 0.7);
+}
+
+.reset:active {
+  background-color: rgb(71, 71, 71, 0.7);
 }

@@ -13,6 +13,7 @@ import './App.css';
 import Viewport from './Viewport.tsx';
 import ChangeSprite from './ChangeSprite';
 import InfoModal from './InfoModal'
+import IntroModal from './IntroModal'
 import LoadingScreen from './LoadingScreen';
 
 import DATA from './data/posters_filtered.json'
@@ -29,9 +30,11 @@ function App(props) {
   const [filter, setFilter] = useState('')
   const [canvasSelection, setCanvasSelection] = useState('')
   const [animate, setAnimate] = useState({})
+  const [showFilter, setShowFilter] = useState(true)
 
   //modal
   const [open, setOpen] = useState(false)
+  const [introOpen, setIntroOpen] = useState(true)
 
   const pixiStage = useRef(null)
   const pixiContainer = useRef(null)
@@ -102,7 +105,6 @@ function App(props) {
     .sort((a, b) => b.value - a.value))
 
   const handleFilter = (word, type, e) => {
-    console.log(e)
     setFilter(word)
 
     var newPacked = {
@@ -116,7 +118,9 @@ function App(props) {
 
     var filterCondition
 
-    if (type == 'topic') {
+    if (type === 'reset') {
+      filterCondition = poster => (poster)
+    } else if (type === 'topic') {
       filterCondition = poster => (poster.topic.includes(word))
     } else {
       filterCondition = poster => (poster.cleanImage.includes(word) || poster.cleanTitle.includes(word))
@@ -162,13 +166,11 @@ function App(props) {
       pixiStage={pixiStage}
       node={node}
       setSelected={() => {
-        console.log('im seting as selected:', node.data)
         setSelected(node.data)
       }}
     />
   })
 
-  console.log('ASDFASDFS', KEYWORDS, require("@fontsource/stardos-stencil"))
 
   return (
     <>
@@ -188,23 +190,39 @@ function App(props) {
       </div> */}
       {
         // deployment
-        // Object.entries(resources).length === 0 && root.length === 0 ?
+        (Object.entries(resources).length === 0 && root.length === 0) ?
         // DEVELOPMENT
-        true ?
+        // true ?
           <LoadingScreen /> :
           <>
             <div className="UI">
-              <div  style={{position: 'fixed'}}>
+              <div hidden={!showFilter} style={{position: 'fixed'}}>
                 <div className="filterContainer" style={{position: 'absolute', left: 0, height: height, width: 175, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>
-                  <div className="filter" onClick={() => setFilter('')}>NONE</div>
+                  {/* <div className="filter" onClick={() => setFilter('')}>NONE</div> */}
                   {KEYWORDS.map(word => <div className="filter" onClick={(event) => handleFilter(word, 'keyword', event)}>{word.toUpperCase()}</div>)}
                 </div>
               </div>
-              <div style={{position: 'fixed', right: 0}}>
+              <div hidden={!showFilter} style={{position: 'fixed', right: 0}}>
                 <div className="filterContainer" style={{position: 'absolute', right: 0, height: height, width: 295, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>
-                  <div className="filter" onClick={() => setFilter('')}>NONE</div>
+                  {/* <div className="filter" onClick={() => setFilter('')}>NONE</div> */}
                   {TOPICS.map(word => <div className="filter topic" onClick={(event) => handleFilter(word[0], 'topic', event)}>{word[1] ? word[1].toUpperCase() :  word[0].toUpperCase()}</div>)}
                 </div>
+              </div>
+              <div style={{position: 'fixed', left: '180px', bottom: 0, color: 'white', display: 'flex'}}>
+                <div
+                onClick={() => setShowFilter(!showFilter)}
+                className="reset"
+                style={{ width: 160, height: 45, display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid white', borderRadius: 10, fontSize: 24 }}>
+                  {showFilter ? 'Hide' : 'Show' } Filters
+                </div>
+                <div
+                hidden={!showFilter}
+                onClick={(event) => handleFilter('', 'reset', event)}
+                className="reset"
+                style={{ width: 160, height: 45, marginLeft: 18, display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid white', borderRadius: 10, fontSize: 24 }}>
+                  Reset Filters
+                </div>
+
               </div>
             </div>
           <Stage
@@ -296,13 +314,18 @@ function App(props) {
               </Container>
             </Viewport>
           </Stage>
+            <InfoModal
+              open={open}
+              setOpen={setOpen}
+              selected={selected}
+            />
+            <IntroModal
+              open={introOpen}
+              setOpen={setIntroOpen}
+            />
           </>
+          
       }
-      <InfoModal
-        open={open}
-        setOpen={setOpen}
-        selected={selected}
-      />
     </>
   );
 }

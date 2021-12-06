@@ -1,7 +1,4 @@
-div {
-    color: white;
-    font-family: 'Stardos Stencil';
-}
+
 
 .container {
     height: 100%;
@@ -10,6 +7,9 @@ div {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    color: white;
+    font-family: 'Stardos Stencil';
+
 }
 
 .subContainer {

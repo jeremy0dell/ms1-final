@@ -21,7 +21,6 @@ export default ({thumbnail, highRes, ...props}) => {
                 return
             }
 
-            console.log('hello', props)
             props.setSelected()
             if (!isHigh) {
                 setTempTint(true)
@@ -31,7 +30,7 @@ export default ({thumbnail, highRes, ...props}) => {
 
             setTimeout(() => {
                 setTempTint(false)
-            }, 500)
+            }, 700)
             props.pixiStage?.current?.app?.stage?.children[0]?.animate({
               time: 1000,
               position: { x: props.node.x, y: props.node.y - 3.7 },
