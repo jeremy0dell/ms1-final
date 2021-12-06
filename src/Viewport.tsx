@@ -25,7 +25,6 @@ const PixiComponentViewport = PixiComponent("Viewport", {
     });
     viewport.drag().pinch().wheel().clampZoom({});
 
-    console.log(viewport,' hello')
 
     return viewport;
   }
