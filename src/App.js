@@ -209,7 +209,6 @@ function App(props) {
                 style={{ width: 160, height: 45, marginLeft: 18, display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid white', borderRadius: 10, fontSize: 24 }}>
                   Reset {showFilter && (filter !== '') ? 'Filters' : 'Zoom'}
                 </div>
-
               </div>
             </div>
           <Stage
@@ -220,13 +219,10 @@ function App(props) {
           >
             {console.log('stage is loaded')}
             <Viewport {...{height, width}} innerRef={pixiViewport}>
-              {console.log('VP is loaded')}
               <Container ref={pixiContainer}>
-                {console.log('COINTAINER is loaded')}
                 {
                   sprites
                 }
-                {console.log('ater SP')}
                   <Text
                     text="World War One"
                     anchor={0.5}
