@@ -5,9 +5,8 @@ import * as utils from '@pixi/utils';
 import * as PIXI from "pixi.js";
 import * as d3 from 'd3'
 import TWEEN from '@tweenjs/tween.js'
-// import Modal from '@mui/material/Modal'
-// import ClickAwayListener from '@mui/material/ClickAwayListener'
 import "@fontsource/stardos-stencil";
+import "@fontsource/montserrat";
 import './App.css';
 
 import Viewport from './Viewport.tsx';
@@ -41,6 +40,7 @@ function App(props) {
   const pixiViewport = useRef(null)
 
   useEffect(() => {
+    console.log('load stuff')
     const loader = new Loader()
 
     DATA.forEach((poster) => {
@@ -51,7 +51,7 @@ function App(props) {
       setResources(resources)
 
       const canvas = d3.select(pixiStage.current._canvas);
-
+      console.log('load set')
       if (canvas) {
         const root = pack(PACKED)
         setRoot(root.descendants().map(n => ({...n, y: n.y - 100, x: n.x - 55})).filter(node => node.depth === 2))
@@ -88,13 +88,6 @@ function App(props) {
   // }, [pixiStage.current])
   // const zoomBehavior = d3.zoom().on("zoom", zoom);
 
-  // function zoom(event) {
-  //   console.log(event,'hello')
-  //   const container = pixiContainer.current
-
-  //   container.setTransform(event.transform.x, event.transform.y, event.transform.k, event.transform.k)
-  //   // console.log(event.transform,container.transform)
-  // }
 
   // d3 stuff now
   const pack = data => d3.pack()
@@ -145,11 +138,19 @@ function App(props) {
       scale: 1,
       ease: 'easeInOutSine'
     })
+  }
 
+  const resetZoom = () => {
+    pixiStage?.current?.app?.stage?.children[0]?.animate({
+      time: 1200,
+      position: {x: width / 2, y: height / 2 },
+      scale: 1,
+      ease: 'easeInOutSine'
+    })
   }
 
   // create sprites
-
+  console.log('sp1')
   const sprites = root.map((node, i) => {
     const {height, width} = resources[node.data.ref].texture.baseTexture
     return <ChangeSprite
@@ -168,26 +169,13 @@ function App(props) {
       setSelected={() => {
         setSelected(node.data)
       }}
+      showFilter={showFilter}
     />
   })
-
+  console.log('sp2')
 
   return (
     <>
-      {/* <div className="UI">
-        <div  style={{position: 'fixed'}}>
-          <div className="filterContainer" style={{position: 'absolute', left: 0, height: height, width: 175, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>
-            <div className="filter" onClick={() => setFilter('')}>NONE</div>
-            {KEYWORDS.map(word => <div className="filter" onClick={(event) => handleFilter(word, 'keyword', event)}>{word.toUpperCase()}</div>)}
-          </div>
-        </div>
-        <div style={{position: 'fixed', right: 0}}>
-          <div className="filterContainer" style={{position: 'absolute', right: 0, height: height, width: 295, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>
-            <div className="filter" onClick={() => setFilter('')}>NONE</div>
-            {TOPICS.map(word => <div className="filter topic" onClick={(event) => handleFilter(word[0], 'topic', event)}>{word[1] ? word[1].toUpperCase() :  word[0].toUpperCase()}</div>)}
-          </div>
-        </div>
-      </div> */}
       {
         // deployment
         (Object.entries(resources).length === 0 && root.length === 0) ?
@@ -203,7 +191,7 @@ function App(props) {
                 </div>
               </div>
               <div hidden={!showFilter} style={{position: 'fixed', right: 0}}>
-                <div className="filterContainer" style={{position: 'absolute', right: 0, height: height, width: 295, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-around'}}>
+                <div className="filterContainer" style={{position: 'absolute', right: 0, height: height, width: 295, color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
                   {/* <div className="filter" onClick={() => setFilter('')}>NONE</div> */}
                   {TOPICS.map(word => <div className="filter topic" onClick={(event) => handleFilter(word[0], 'topic', event)}>{word[1] ? word[1].toUpperCase() :  word[0].toUpperCase()}</div>)}
                 </div>
@@ -216,11 +204,10 @@ function App(props) {
                   {showFilter ? 'Hide' : 'Show' } Filters
                 </div>
                 <div
-                hidden={!showFilter}
-                onClick={(event) => handleFilter('', 'reset', event)}
+                onClick={showFilter && (filter !== '') ? (event) => handleFilter('', 'reset', event) : resetZoom}
                 className="reset"
                 style={{ width: 160, height: 45, marginLeft: 18, display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid white', borderRadius: 10, fontSize: 24 }}>
-                  Reset Filters
+                  Reset {showFilter && (filter !== '') ? 'Filters' : 'Zoom'}
                 </div>
 
               </div>
@@ -231,11 +218,15 @@ function App(props) {
             id="pixiStage"
             // onClick={(event) => console.log(event)}
           >
+            {console.log('stage is loaded')}
             <Viewport {...{height, width}} innerRef={pixiViewport}>
+              {console.log('VP is loaded')}
               <Container ref={pixiContainer}>
+                {console.log('COINTAINER is loaded')}
                 {
                   sprites
                 }
+                {console.log('ater SP')}
                   <Text
                     text="World War One"
                     anchor={0.5}
@@ -247,15 +238,15 @@ function App(props) {
                         fontFamily: ['Stardos Stencil'],
                         fontSize: 36,
                         fontWeight: 'normal',
-                        fill: ['white'], // gradient
+                        fill: ['wheat'], // gradient
                         // stroke: '#01d27e',
-                        strokeThickness: 5,
+                        // strokeThickness: 5,
                         letterSpacing: 10,
-                        dropShadow: true,
-                        dropShadowColor: 'wheat',
-                        dropShadowBlur: 4,
-                        dropShadowAngle: Math.PI / 6,
-                        dropShadowDistance: 6,
+                        // dropShadow: true,
+                        // dropShadowColor: 'white',
+                        // dropShadowBlur: 4,
+                        // dropShadowAngle: Math.PI / 6,
+                        // dropShadowDistance: 6,
                         // wordWrap: true,
                         // wordWrapWidth: 440,
                       })
@@ -272,15 +263,15 @@ function App(props) {
                         fontFamily: ['Stardos Stencil'],
                         fontSize: 36,
                         fontWeight: 'normal',
-                        fill: ['white'], // gradient
+                        fill: ['wheat'], // gradient
                         // stroke: '#01d27e',
-                        strokeThickness: 5,
+                        // strokeThickness: 5,
                         letterSpacing: 10,
-                        dropShadow: true,
-                        dropShadowColor: 'wheat',
-                        dropShadowBlur: 4,
-                        dropShadowAngle: Math.PI / 6,
-                        dropShadowDistance: 6,
+                        // dropShadow: true,
+                        // dropShadowColor: 'white',
+                        // dropShadowBlur: 4,
+                        // dropShadowAngle: Math.PI / 6,
+                        // dropShadowDistance: 6,
                         // wordWrap: true,
                         // wordWrapWidth: 440,
                       })
@@ -297,15 +288,15 @@ function App(props) {
                       fontFamily: ['Stardos Stencil'],
                       fontSize: 36,
                       fontWeight: 'normal',
-                      fill: ['white'], // gradient
+                      fill: ['wheat'], // gradient
                       // stroke: '#01d27e',
-                      strokeThickness: 5,
+                      // strokeThickness: 5,
                       letterSpacing: 10,
-                      dropShadow: true,
-                      dropShadowColor: 'wheat',
-                      dropShadowBlur: 4,
-                      dropShadowAngle: Math.PI / 6,
-                      dropShadowDistance: 6,
+                      // dropShadow: true,
+                      // dropShadowColor: 'white',
+                      // dropShadowBlur: 4,
+                      // dropShadowAngle: Math.PI / 6,
+                      // dropShadowDistance: 6,
                       // wordWrap: true,
                       // wordWrapWidth: 440,
                     })

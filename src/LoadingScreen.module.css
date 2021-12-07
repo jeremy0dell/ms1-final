@@ -20,6 +20,7 @@
 .loading {
     font-size: 70px;
     width: 330px;
+    margin-left: 40px;
 }
   
 .loading:after {

@@ -36,7 +36,10 @@ export default ({thumbnail, highRes, ...props}) => {
               position: { x: props.node.x, y: props.node.y - 3.7 },
               scale: 70,
               ease: 'easeInOutSine',
-              callbackOnComplete: () => props.setOpen(true)
+              callbackOnComplete: () => {
+                  props.setOpen(true)
+                //   props.showFilter(false)
+              }
             })
           }}
         />
